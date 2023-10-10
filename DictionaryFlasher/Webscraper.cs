@@ -23,11 +23,15 @@ namespace DictionaryFlasher
                 doc = web.Load("https://thesaurus.com/browse/" + word);
             }
             catch { throw; };
-
-            if(!doc.DocumentNode.SelectSingleNode(("//button[@id='thesaurus-entry-" + word + "-tab-0']")).InnerText.Contains(partofspeech[0..3].ToLower()))
+            try
             {
-                return new string[1] { "[MANUAL]" };
+                if (!doc.DocumentNode.SelectSingleNode(("//button[@id='thesaurus-entry-" + word + "-tab-0']")).InnerText.Contains(partofspeech[0..3].ToLower()))
+                {
+                    return new string[1] { "[MANUAL]" };
+                }
             }
+            catch { return new string[1] { "[MANUAL]" }; }
+            
 
             HtmlNodeCollection node;
             node = doc.DocumentNode.SelectNodes("//a[@data-type='pill-button']");
